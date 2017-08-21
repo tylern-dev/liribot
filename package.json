@@ -1,0 +1,25 @@
+{
+  "name": "liribot",
+  "version": "1.0.0",
+  "description": "an bot for retrieving requests",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tylern88/liribot.git"
+  },
+  "author": "Tyler Negro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tylern88/liribot/issues"
+  },
+  "homepage": "https://github.com/tylern88/liribot#readme",
+  "dependencies": {
+    "inquirer": "^3.2.2",
+    "node-spotify-api": "^1.0.7",
+    "request": "^2.81.0",
+    "twitter": "^1.7.1"
+  }
+}

@@ -5,55 +5,98 @@ var spotify = require('node-spotify-api');
 var request = require('request');
 var fs = require('fs');
 
-/***** INQUIRER PROMPTS *****/
-inquirer.prompt([
-    {
-        type: 'list',
-        message: 'Please select one of the follwing to start your request',
-        choices: ['Tweets', 'Spotify this song', 'movie-this', 'do what it says'],
-        name: 'selector'
+var command = process.argv[2];
+var userInput = process.argv[3];
 
+
+/**** Process.argv logic *****/
+if (!command){
+    inquirePrompts()
+}
+else if(command === 'my-tweets'){
+    if(userInput === null){
+        userInput = 'kingjames'
+    } else {
+        getTweet(userInput)
     }
-]).then(function(inquirerRequest){
-    //TWITTER INQUIRER
-    if(inquirerRequest.selector === 'Tweets'){
-        inquirer.prompt([
-            {
-                type: 'input',
-                message: 'Please enter a Twitter Handle:',
-                name: 'twitterHandler'
-            }
-        ]).then(function(tHandle){
-            getTweet(tHandle.twitterHandler)
-        })
-        //SPOTIFY INQUIRER
-    } else if(inquirerRequest.selector === 'Spotify this song'){
-        inquirer.prompt([
-            {
-                type: 'input',
-                message: 'Plese enter the name of a song:',
-                default: 'Ace of Base The Sign',
-                name: 'spotifyHandler'
-            }
-        ]).then(function(sHandle){
-            getSpotify(sHandle.spotifyHandler);
-        })
-        //MOVIE INQUIRER
-    } else if (inquirerRequest.selector === 'movie-this'){
-        inquirer.prompt([
-            {
-                type: 'input',
-                message: 'Enter title of movie',
-                name: 'movieHandler'
-            }
-        ]).then(function(mHandle){
-            getMovie(mHandle.movieHandler);
-        })
-    } else if (inquirerRequest.selector === 'do what it says'){
-        
+}
+else if(command === 'spotify-this-song'){
+    if(userInput === null){
+        userInput = 'Ace of Base The Sign'
+    } else {
+        getSpotify(userInput)
     }
-})
-/* ************************ */ //END INQUIRER 
+}
+else if(command === 'movie-this'){
+    if(userInput === null){
+        userInput = 'Inception'
+    } else {
+        getMovie(userInput)
+    }
+}
+else if(command === 'do-what-it-says'){
+    runFile()
+} else {
+    console.log('\n******Invalid Command******')
+    console.log('Please try one of these commands:\n')
+    inquirePrompts();
+}
+/* ****************** */
+
+
+/***** INQUIRER PROMPTS *****/
+function inquirePrompts(){
+    inquirer.prompt([
+        {
+            type: 'list',
+            message: 'Please select one of the follwing to start your request',
+            choices: ['my-tweets', 'spotify-this-song', 'movie-this', 'do-what-it-says'],
+            name: 'selector'
+
+        }
+    ]).then(function(inquirerRequest){
+        //TWITTER INQUIRER
+        if(inquirerRequest.selector === 'my-tweets'){
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    message: 'Please enter a Twitter Handle:',
+                    name: 'twitterHandler'
+                }
+            ]).then(function(tHandle){
+                getTweet(tHandle.twitterHandler)
+            })
+            //SPOTIFY INQUIRER
+        } else if(inquirerRequest.selector === 'spotify-this-song'){
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    message: 'Plese enter the name of a song:',
+                    default: 'Ace of Base The Sign',
+                    name: 'spotifyHandler'
+                }
+            ]).then(function(sHandle){
+                getSpotify(sHandle.spotifyHandler);
+            })
+            //MOVIE INQUIRER
+        } else if (inquirerRequest.selector === 'movie-this'){
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    message: 'Enter title of movie:',
+                    default: 'Inception',
+                    name: 'movieHandler'
+                }
+            ]
+        ).then(function(mHandle){
+                getMovie(mHandle.movieHandler);
+            })
+        } else if (inquirerRequest.selector === 'do-what-it-says'){
+            runFile()
+        }
+    })
+    /* **********END INQUIRER************ */  
+}
 
 
 function getTweet(tHandle){
@@ -68,7 +111,7 @@ function getTweet(tHandle){
         if(!error){
             tweets.forEach(function(element) {
                 console.log(element.text)
-                console.log('=================== \n')
+                console.log('===================\n')
             });
         }
     })
@@ -86,10 +129,12 @@ function getSpotify(spotifySong){
             var songName = data.tracks.items[0].name
             var previewLink = data.tracks.items[0].preview_url
             var albumName = data.tracks.items[0].album.name
+            console.log('====================')
             console.log('Artist: '+ artist)
             console.log('Song Name: '+songName)
             console.log('Preview URL: '+previewLink)
-            console.log('Album Name: '+albumName)    
+            console.log('Album Name: '+albumName) 
+            console.log('====================')   
         })
         .catch(function(err) {
             console.error('Error occurred: ' + err); 
@@ -102,6 +147,7 @@ function getMovie(movieTitle){
     var request = require('request');
     request(omdbURL, function (error, response, body) { 
         var bodyParse = JSON.parse(body);
+        console.log('====================\n')  
         console.log('Title: '+bodyParse.Title);
         console.log('Year Released: '+bodyParse.Year);
         console.log('IMDB Rating: '+bodyParse.imdbRating);
@@ -110,5 +156,18 @@ function getMovie(movieTitle){
         console.log('Language: '+bodyParse.Language);
         console.log('Plot: '+bodyParse.Plot);
         console.log('Actor(s): '+bodyParse.Actors)
+        console.log('\n====================')  
     });
 }
+
+function runFile(){
+    fs.readFile('./random.txt', 'utf8', function(err, data){
+        var splitData = data.split(',');
+        var dataCommand = splitData[0];
+        var dataInput = splitData[1];
+        if(dataCommand === 'spotify-this-song'){
+            getSpotify(dataInput)
+        }
+    })
+}
+

@@ -8,6 +8,7 @@ var fs = require('fs');
 var command = process.argv[2];
 var userInput = process.argv[3];
 
+writeCommand(command,userInput)
 
 /**** Process.argv logic *****/
 if (!command){
@@ -51,12 +52,12 @@ function inquirePrompts(){
             type: 'list',
             message: 'Please select one of the follwing to start your request',
             choices: ['my-tweets', 'spotify-this-song', 'movie-this', 'do-what-it-says'],
-            name: 'selector'
+            name: 'commandSelector'
 
         }
     ]).then(function(inquirerRequest){
         //TWITTER INQUIRER
-        if(inquirerRequest.selector === 'my-tweets'){
+        if(inquirerRequest.commandSelector === 'my-tweets'){
             inquirer.prompt([
                 {
                     type: 'input',
@@ -66,8 +67,9 @@ function inquirePrompts(){
             ]).then(function(tHandle){
                 getTweet(tHandle.twitterHandler)
             })
+
             //SPOTIFY INQUIRER
-        } else if(inquirerRequest.selector === 'spotify-this-song'){
+        } else if(inquirerRequest.commandSelector === 'spotify-this-song'){
             inquirer.prompt([
                 {
                     type: 'input',
@@ -79,7 +81,7 @@ function inquirePrompts(){
                 getSpotify(sHandle.spotifyHandler);
             })
             //MOVIE INQUIRER
-        } else if (inquirerRequest.selector === 'movie-this'){
+        } else if (inquirerRequest.commandSelector === 'movie-this'){
             inquirer.prompt([
                 {
                     type: 'input',
@@ -91,14 +93,16 @@ function inquirePrompts(){
         ).then(function(mHandle){
                 getMovie(mHandle.movieHandler);
             })
-        } else if (inquirerRequest.selector === 'do-what-it-says'){
+        } else if (inquirerRequest.commandSelector === 'do-what-it-says'){
             runFile()
         }
     })
-    /* **********END INQUIRER************ */  
 }
+/* **********END INQUIRER************ */  
 
 
+/* TWITTER FUNCTION */
+//received input from user and returs either the default twitter handle or the inputed one
 function getTweet(tHandle){
     var twitterKeys = new twitter(keys.twitterKeys)
     
@@ -117,11 +121,13 @@ function getTweet(tHandle){
     })
 }
 
+/* ****SPOTIFY FUNCTION**** */
+//passes in user's input and returns the query
 function getSpotify(spotifySong){
     var spotifySearch = new spotify(keys.spotifyKeys)
     var spotifyParams = {
         type: 'track',
-        query: spotifySong
+        query: spotifySong //uses input from user and sets it to query
     }
     spotifySearch.request('https://api.spotify.com/v1/search?q='+spotifyParams.query+'&type=track')
         .then(function(data) {
@@ -141,7 +147,8 @@ function getSpotify(spotifySong){
     });
 };
 
-
+/* ****GET MOVIE FUNCTION**** */
+//passes in user's input and returns the query
 function getMovie(movieTitle){
     var omdbURL = 'http://www.omdbapi.com/?apikey='+keys.omdbKeys.key+'&t='+movieTitle
     var request = require('request');
@@ -169,5 +176,15 @@ function runFile(){
             getSpotify(dataInput)
         }
     })
+}
+
+function writeCommand(cmd, userInput){
+    var writeString = cmd+','+'"'+userInput+'"\n';
+    fs.appendFile("./log.txt", writeString, "utf8",function(err){
+        if(err){
+            return console.log("Error: "+err)
+        }
+    });
+
 }
 

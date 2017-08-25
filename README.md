@@ -7,7 +7,7 @@ This app uses these NPM packages:
 4. request
 
 You can run the app either by:
-1. node liri.js **command search query**
+1. node liri.js **<command> <search query>**
 2. node liri.js
   
 Available Commands:

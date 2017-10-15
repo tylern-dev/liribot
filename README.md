@@ -5,7 +5,7 @@ Command Line app that displays answers to a user's query. This was built using N
 1. clone this repo
 2. cd into liribot `cd liribot`
 3. Install the packages `npm install`
-  * If you don't have NPM installed follow this instructions [here](https://www.npmjs.com/get-npm)
+   * If you don't have NPM installed follow this instructions [here](https://www.npmjs.com/get-npm)
 4. You are all set 
 
 #### You can run the app either by:

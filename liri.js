@@ -46,6 +46,7 @@ else if(command === 'do-what-it-says'){
 
 
 /***** INQUIRER PROMPTS *****/
+// this is what will ask users the questions depending on what option is selected
 function inquirePrompts(){
     inquirer.prompt([
         {

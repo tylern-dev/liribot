@@ -1,5 +1,5 @@
 # liribot
-Command Line app that displays answers to a user's query.
+Command Line app that displays answers to a user's query. This was built using Node.js.
 *********
 ### To Install:
 1. clone this repo

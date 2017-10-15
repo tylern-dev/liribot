@@ -19,7 +19,7 @@ OR
 * spotify-this-song `node liri.js spotify-this-song "bohemian rhapsody"`
 * movie-this `node liri.js movie-this inception`
 * do-what-it-says 
-   *(This command reads a text file in the liribot directory and performs the command based on what is in the file. See random.txt)
+  * (This command reads a text file in the liribot directory and performs the command based on what is in the file. See random.txt)
 
 #### This app uses these NPM packages:
 1. inquirer (simplifies asking questions and receiving user input)
